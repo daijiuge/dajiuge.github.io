@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentGod 智神 | AI智能体实战知识库</title>
+<meta name="description" content="AgentGod 智神 — AI智能体实战知识库：智能体模板、提示词工程、工作流实战、行业案例，一站式进阶。">
+<style>
+:root{
+  --bg:#04060f;
+  --bg2:#070b1a;
+  --panel:rgba(13,20,40,.62);
+  --line:rgba(90,140,255,.14);
+  --cyan:#00e5ff;
+  --purple:#7c4dff;
+  --magenta:#ff2d9b;
+  --txt:#e8eeff;
+  --txt2:#8b97b8;
+  --grad:linear-gradient(90deg,#00e5ff,#7c4dff 55%,#ff2d9b);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  background:var(--bg);color:var(--txt);overflow-x:hidden;line-height:1.6;
+}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* ========== 背景层 ========== */
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(60,110,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(60,110,255,.05) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,#000 30%,transparent 100%);
+}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);z-index:0;pointer-events:none;opacity:.5}
+.orb.o1{width:520px;height:520px;background:#0a3cff88;top:-180px;left:-120px;animation:drift 14s ease-in-out infinite alternate}
+.orb.o2{width:460px;height:460px;background:#7c4dff66;top:8%;right:-160px;animation:drift 18s ease-in-out infinite alternate-reverse}
+.orb.o3{width:380px;height:380px;background:#00e5ff44;top:52%;left:34%;animation:drift 22s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,50px) scale(1.12)}}
+
+main,nav,footer{position:relative;z-index:1}
+
+/* ========== 导航 ========== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(4,6,15,.72);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;height:66px;display:flex;align-items:center;gap:36px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:.5px}
+.logo-mark{
+  width:34px;height:34px;border-radius:10px;position:relative;flex:none;
+  background:conic-gradient(from 210deg,#00e5ff,#7c4dff,#ff2d9b,#00e5ff);
+  display:grid;place-items:center;
+}
+.logo-mark::before{content:"";position:absolute;inset:2px;border-radius:8px;background:#070b1a}
+.logo-mark span{position:relative;font-size:15px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{font-size:11px;color:var(--txt2);font-weight:600;letter-spacing:2px;display:block;line-height:1;margin-top:2px}
+.nav-links{display:flex;gap:30px;margin-left:auto;font-size:14.5px;color:var(--txt2)}
+.nav-links a{transition:color .2s;position:relative;padding:6px 0}
+.nav-links a:hover{color:var(--txt)}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--grad);transition:width .25s;border-radius:2px}
+.nav-links a:hover::after{width:100%}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:none;
+  font-size:14.5px;font-weight:700;border-radius:10px;transition:.25s;font-family:inherit;
+}
+.btn-primary{
+  padding:10px 22px;color:#fff;
+  background:linear-gradient(90deg,#00b8d4,#6a3df0);
+  box-shadow:0 0 22px #00e5ff44,0 6px 20px #0008;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 34px #00e5ff66,0 10px 26px #000a}
+.btn-ghost{padding:9px 20px;color:var(--cyan);border:1px solid #00e5ff55;background:rgba(0,229,255,.06)}
+.btn-ghost:hover{background:rgba(0,229,255,.14);border-color:#00e5ff99}
+
+/* ========== Hero ========== */
+.hero{padding:170px 0 90px;text-align:center;position:relative}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--cyan);
+  border:1px solid #00e5ff44;border-radius:999px;padding:7px 18px;margin-bottom:30px;
+  background:rgba(0,229,255,.05);letter-spacing:1px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{
+  font-size:clamp(38px,6vw,72px);font-weight:900;line-height:1.22;letter-spacing:1px;
+}
+.hero h1 .grad{
+  background:linear-gradient(92deg,#00e5ff 10%,#7c4dff 50%,#ff2d9b 90%);
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 6s linear infinite;
+}
+@keyframes shine{to{background-position:200% center}}
+.hero p.sub{
+  margin:26px auto 0;max-width:640px;font-size:17px;color:var(--txt2);
+}
+.hero p.sub em{color:var(--cyan);font-style:normal}
+
+/* 搜索框 */
+.search{
+  margin:42px auto 0;max-width:600px;display:flex;align-items:center;gap:10px;
+  background:rgba(10,16,34,.8);border:1px solid #2a3d6e;border-radius:14px;padding:8px 8px 8px 20px;
+  box-shadow:0 0 0 1px #0006,0 14px 40px #0009 inset;transition:border .25s,box-shadow .25s;
+}
+.search:focus-within{border-color:#00e5ff99;box-shadow:0 0 30px #00e5ff22}
+.search svg{flex:none;opacity:.55}
+.search input{
+  flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:15px;font-family:inherit;
+}
+.search input::placeholder{color:#5b6885}
+.hot-tags{margin-top:16px;font-size:13px;color:#5b6885;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hot-tags a{color:#8b97b8;border:1px solid var(--line);padding:4px 13px;border-radius:999px;transition:.2s}
+.hot-tags a:hover{color:var(--cyan);border-color:#00e5ff66}
+
+/* Hero 统计 */
+.hero-stats{display:flex;justify-content:center;gap:0;margin-top:64px;flex-wrap:wrap}
+.hstat{padding:0 44px;border-right:1px solid var(--line);text-align:center}
+.hstat:last-child{border-right:none}
+.hstat b{font-size:34px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;display:block}
+.hstat span{font-size:13px;color:var(--txt2);letter-spacing:1px}
+
+/* ========== 滚动跑马灯 ========== */
+.marquee{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:rgba(8,12,26,.5);overflow:hidden;padding:16px 0;position:relative;
+}
+.marquee::before,.marquee::after{
+  content:"";position:absolute;top:0;bottom:0;width:140px;z-index:2;pointer-events:none;
+}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.marquee::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.track{display:flex;gap:56px;width:max-content;animation:scroll 30s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.track span{font-size:14px;color:#6d7a9c;letter-spacing:1px;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.track i{width:5px;height:5px;border-radius:50%;background:var(--purple);display:inline-block}
+
+/* ========== 通用 Section ========== */
+section{padding:96px 0}
+.sec-head{text-align:center;margin-bottom:60px}
+.sec-head .tag{
+  display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:3px;color:var(--cyan);
+  border:1px solid #00e5ff44;padding:5px 16px;border-radius:999px;margin-bottom:18px;background:rgba(0,229,255,.05);
+}
+.sec-head h2{font-size:clamp(28px,3.6vw,42px);font-weight:900;letter-spacing:1px}
+.sec-head p{color:var(--txt2);margin-top:14px;font-size:15.5px}
+
+/* ========== 核心板块 ========== */
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px 28px;
+  position:relative;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;
+  backdrop-filter:blur(10px);
+}
+.card::before{
+  content:"";position:absolute;inset:0;border-radius:18px;padding:1px;
+  background:linear-gradient(135deg,#00e5ff66,transparent 40%,transparent 60%,#7c4dff66);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 50px #000a}
+.card:hover::before{opacity:1}
+.card .ico{
+  width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin-bottom:20px;
+  background:rgba(0,229,255,.09);border:1px solid #00e5ff33;
+}
+.card:nth-child(2n) .ico{background:rgba(124,77,255,.09);border-color:#7c4dff44}
+.card:nth-child(3n) .ico{background:rgba(255,45,155,.08);border-color:#ff2d9b3d}
+.card h3{font-size:18.5px;margin-bottom:10px;font-weight:800}
+.card p{font-size:14px;color:var(--txt2)}
+.card .more{margin-top:18px;font-size:13px;color:var(--cyan);display:inline-flex;align-items:center;gap:6px}
+.card .more::after{content:"→";transition:transform .2s}
+.card:hover .more::after{transform:translateX(4px)}
+.card .cnt{
+  position:absolute;top:26px;right:26px;font-size:12px;color:#6d7a9c;
+  border:1px solid var(--line);border-radius:999px;padding:3px 11px;
+}
+
+/* ========== 精选案例 ========== */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feat .card{padding:0;display:flex;flex-direction:column}
+.f-cover{
+  height:170px;position:relative;overflow:hidden;border-radius:18px 18px 0 0;
+  display:grid;place-items:center;
+}
+.f-cover .big{font-size:56px;filter:drop-shadow(0 8px 24px #0008)}
+.fc1{background:linear-gradient(135deg,#06203a,#0b2f22)}
+.fc2{background:linear-gradient(135deg,#1d1140,#33124a)}
+.fc3{background:linear-gradient(135deg,#3a0f2b,#401520)}
+.f-cover .scan{
+  position:absolute;left:0;right:0;height:60px;top:-60px;
+  background:linear-gradient(180deg,transparent,#00e5ff1f,transparent);
+  animation:scan 4s linear infinite;
+}
+@keyframes scan{to{top:110%}}
+.f-body{padding:24px 26px 28px;flex:1;display:flex;flex-direction:column}
+.f-tags{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.f-tags span{font-size:11.5px;padding:3px 11px;border-radius:999px;letter-spacing:.5px}
+.t-cyan{color:var(--cyan);border:1px solid #00e5ff44;background:rgba(0,229,255,.07)}
+.t-purple{color:#b39dff;border:1px solid #7c4dff55;background:rgba(124,77,255,.09)}
+.t-pink{color:#ff7ac0;border:1px solid #ff2d9b4d;background:rgba(255,45,155,.07)}
+.f-body h3{font-size:17px;font-weight:800;margin-bottom:9px}
+.f-body p{font-size:13.5px;color:var(--txt2);flex:1}
+.f-metrics{display:flex;gap:22px;margin-top:18px;padding-top:16px;border-top:1px dashed #22315c}
+.f-metrics div b{font-size:17px;color:var(--cyan);font-weight:800;display:block}
+.f-metrics div span{font-size:11.5px;color:#6d7a9c}
+
+/* ========== 数据带 ========== */
+.databar{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(10,16,36,.6),rgba(6,9,20,.4));
+  padding:56px 0;
+}
+.databar .grid6{gap:0}
+.db{ text-align:center;padding:10px 12px;border-right:1px solid var(--line)}
+.db:last-child{border-right:none}
+.db b{font-size:30px;font-weight:900;display:block}
+.db:nth-child(1) b{color:var(--cyan)}.db:nth-child(2) b{color:#b39dff}.db:nth-child(3) b{color:#ff7ac0}
+.db:nth-child(4) b{color:#7cf0c0}.db:nth-child(5) b{color:#ffd166}.db:nth-child(6) b{color:#8b97b8}
+.db span{font-size:12.5px;color:var(--txt2);letter-spacing:1px}
+
+/* ========== 学习路径 ========== */
+.path{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;counter-reset:step}
+.step{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 26px;position:relative;
+  transition:.3s;
+}
+.step:hover{border-color:#00e5ff66;transform:translateY(-5px)}
+.step::before{
+  counter-increment:step;content:"0" counter(step);
+  font-size:46px;font-weight:900;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  opacity:.85;display:block;margin-bottom:16px;
+}
+.step h3{font-size:17px;font-weight:800;margin-bottom:9px}
+.step p{font-size:13.5px;color:var(--txt2)}
+.step .lv{position:absolute;top:28px;right:24px;font-size:11px;letter-spacing:2px;color:#6d7a9c}
+
+/* ========== 订阅 CTA ========== */
+.cta{
+  border-radius:26px;padding:70px 40px;text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(124,77,255,.1) 50%,rgba(255,45,155,.08));
+  border:1px solid #2a3d6e;
+}
+.cta::before{
+  content:"";position:absolute;inset:-60%;
+  background:conic-gradient(from 0deg,transparent 70%,#00e5ff22 80%,#7c4dff33 90%,transparent);
+  animation:rot 9s linear infinite;
+}
+@keyframes rot{to{transform:rotate(360deg)}}
+.cta-in{position:relative}
+.cta h2{font-size:clamp(26px,3.4vw,38px);font-weight:900}
+.cta p{color:var(--txt2);margin:16px 0 34px;font-size:15.5px}
+.cta form{display:flex;gap:12px;max-width:520px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.cta input{
+  flex:1;min-width:240px;background:rgba(6,10,22,.85);border:1px solid #2a3d6e;border-radius:12px;
+  padding:14px 20px;color:var(--txt);font-size:14.5px;outline:none;font-family:inherit;transition:.25s;
+}
+.cta input:focus{border-color:#00e5ff99;box-shadow:0 0 24px #00e5ff22}
+
+/* ========== Footer ========== */
+footer{border-top:1px solid var(--line);background:rgba(5,8,17,.8);padding:64px 0 30px}
+.f-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
+.f-grid h4{font-size:14px;letter-spacing:2px;color:var(--txt);margin-bottom:18px}
+.f-grid a{display:block;font-size:13.5px;color:var(--txt2);margin-bottom:11px;transition:color .2s}
+.f-grid a:hover{color:var(--cyan)}
+.f-brand p{font-size:13.5px;color:var(--txt2);margin-top:16px;max-width:320px}
+.copy{border-top:1px solid var(--line);padding-top:26px;text-align:center;font-size:12.5px;color:#5b6885;letter-spacing:1px}
+.copy a{color:#6d7a9c}
+
+/* ========== 响应式 ========== */
+@media(max-width:960px){
+  .grid6,.feat{grid-template-columns:repeat(2,1fr)}
+  .path{grid-template-columns:repeat(2,1fr)}
+  .f-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .hstat{padding:0 26px}
+}
+@media(max-width:600px){
+  .grid6,.feat,.path{grid-template-columns:1fr}
+  .hero{padding-top:130px}
+  .hero-stats{gap:18px 0}
+  .hstat{padding:0 20px}
+  .db{border-right:none;border-bottom:1px solid var(--line);padding:18px 0}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<!-- ===================== 导航 ===================== -->
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#">
+      <div class="logo-mark"><span>神</span></div>
+      <div>AgentGod <b>智神</b><small>AI AGENT KNOWLEDGE</small></div>
+    </a>
+    <div class="nav-links">
+      <a href="#sections">知识库</a>
+      <a href="#cases">实战案例</a>
+      <a href="#path">学习路径</a>
+      <a href="#rank">智能体榜</a>
+      <a href="#about">关于</a>
+    </div>
+    <button class="btn btn-primary">免费开始 →</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ===================== Hero ===================== -->
+<header class="hero wrap">
+  <div class="hero-badge"><span class="dot"></span>已收录 1,200+ 智能体实战案例 · 每日更新</div>
+  <h1>驾驭 AI 智能体<br><span class="grad">从实战中来，到实战中去</span></h1>
+  <p class="sub">AgentGod 智神 · AI智能体实战知识库 —— 沉淀一线 <em>提示词工程</em>、<em>工作流编排</em> 与 <em>行业落地案例</em>，让每一个智能体都真正为你干活。</p>
+
+  <div class="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b97b8" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="text" placeholder="搜索智能体 / 提示词 / 工作流 / 案例…">
+    <button class="btn btn-primary">搜索</button>
+  </div>
+  <div class="hot-tags">
+    热门：
+    <a href="#">Coze 搭建</a>
+    <a href="#">Dify 工作流</a>
+    <a href="#">客服机器人</a>
+    <a href="#">爆文写作智能体</a>
+    <a href="#">数据分析 Agent</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hstat"><b>1,286</b><span>实战案例</span></div>
+    <div class="hstat"><b>3,500+</b><span>提示词模板</span></div>
+    <div class="hstat"><b>420</b><span>工作流配方</span></div>
+    <div class="hstat"><b>98K</b><span>实战派用户</span></div>
+  </div>
+</header>
+
+<!-- ===================== 跑马灯 ===================== -->
+<div class="marquee">
+  <div class="track">
+    <span><i></i>新书上线：《智能体创业指南：从 0 到月入 10 万》</span>
+    <span><i></i>本周专题：MCP 协议全景解析与 30 个实用 Server 推荐</span>
+    <span><i></i>实战复盘：某电商品牌用 12 个智能体替代 8 人内容团队</span>
+    <span><i></i>上新：DeepSeek-R1 智能体调优手册（附完整提示词）</span>
+    <span><i></i>榜单更新：本月效率类智能体 Top20 公布</span>
+    <span><i></i>教程：零代码 2 小时搭建企业知识库问答机器人</span>
+    <span><i></i>新书上线：《智能体创业指南：从 0 到月入 10 万》</span>
+    <span><i></i>本周专题：MCP 协议全景解析与 30 个实用 Server 推荐</span>
+    <span><i></i>实战复盘：某电商品牌用 12 个智能体替代 8 人内容团队</span>
+    <span><i></i>上新：DeepSeek-R1 智能体调优手册（附完整提示词）</span>
+    <span><i></i>榜单更新：本月效率类智能体 Top20 公布</span>
+    <span><i></i>教程：零代码 2 小时搭建企业知识库问答机器人</span>
+  </div>
+</div>
+
+<!-- ===================== 核心板块 ===================== -->
+<section id="sections">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">CORE MODULES</div>
+      <h2>六大核心板块，一站式进阶</h2>
+      <p>从提示词到工作流，从单兵智能体到多智能体协作，覆盖 AI Agent 实战全链路</p>
+    </div>
+    <div class="grid6">
+      <div class="card">
+        <div class="cnt">486 套</div>
+        <div class="ico">🤖</div>
+        <h3>智能体模板库</h3>
+        <p>开箱即用的智能体模板：写作、运营、编程、数据分析、客服……一键复制，五分钟跑通你的第一个 Agent。</p>
+        <a class="more" href="#">浏览模板</a>
+      </div>
+      <div class="card">
+        <div class="cnt">3,500+</div>
+        <div class="ico">⌨️</div>
+        <h3>提示词工程</h3>
+        <p>经过真实业务验证的系统化提示词：角色设定、思维链、结构化输出、反幻觉约束，附逐行拆解。</p>
+        <a class="more" href="#">查看词库</a>
+      </div>
+      <div class="card">
+        <div class="cnt">420 个</div>
+        <div class="ico">🔀</div>
+        <h3>工作流实战</h3>
+        <p>Dify / Coze / n8n 全平台工作流配方：RAG 检索、多轮对话、定时任务、多智能体编排，可直接导入。</p>
+        <a class="more" href="#">获取配方</a>
+      </div>
+      <div class="card">
+        <div class="cnt">215 篇</div>
+        <div class="ico">📊</div>
+        <h3>行业落地案例</h3>
+        <p>电商、教育、法律、医疗、自媒体……一线操盘手亲述的落地复盘，含投入产出与踩坑清单。</p>
+        <a class="more" href="#">阅读案例</a>
+      </div>
+      <div class="card">
+        <div class="cnt">78 款</div>
+        <div class="ico">🧰</div>
+        <h3>AI 工具评测</h3>
+        <p>横向评测主流智能体平台与工具：能力边界、价格、适用场景，用真实任务跑分，拒绝云评测。</p>
+        <a class="more" href="#">对比评测</a>
+      </div>
+      <div class="card">
+        <div class="cnt">12 期</div>
+        <div class="ico">🚀</div>
+        <h3>进阶训练营</h3>
+        <p>体系化课程：从入门到多智能体架构师。每期配实战作业与导师点评，学完带走可上线的项目。</p>
+        <a class="more" href="#">了解训练营</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 精选案例 ===================== -->
+<section id="cases" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">FEATURED CASES</div>
+      <h2>本周精选实战案例</h2>
+      <p>每一个案例都经过真实业务验证，附完整提示词与工作流源文件</p>
+    </div>
+    <div class="feat">
+      <div class="card">
+        <div class="f-cover fc1"><div class="scan"></div><div class="big">🛒</div></div>
+        <div class="f-body">
+          <div class="f-tags"><span class="t-cyan">电商</span><span class="t-purple">内容矩阵</span><span class="t-pink">多智能体</span></div>
+          <h3>12 个智能体替代 8 人内容团队</h3>
+          <p>某纸品电商品牌用选题、脚本、剪辑、投放四大类智能体组成内容流水线，短视频产能提升 6 倍，团队从 8 人精简到 2 人监督。</p>
+          <div class="f-metrics">
+            <div><b>6×</b><span>内容产能</span></div>
+            <div><b>-75%</b><span>人力成本</span></div>
+            <div><b>28天</b><span>落地周期</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="f-cover fc2"><div class="scan"></div><div class="big">💼</div></div>
+        <div class="f-body">
+          <div class="f-tags"><span class="t-cyan">法律</span><span class="t-purple">RAG 知识库</span></div>
+          <h3>律所合同审查 Agent：初审效率提升 10 倍</h3>
+          <p>基于 RAG + 结构化审查清单构建的合同审查智能体，自动标记风险条款并生成审查意见，律师只需复核终审，初审从 3 天压缩到半天。</p>
+          <div class="f-metrics">
+            <div><b>10×</b><span>审查效率</span></div>
+            <div><b>96%</b><span>风险召回率</span></div>
+            <div><b>0.5天</b><span>初审耗时</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="f-cover fc3"><div class="scan"></div><div class="big">📱</div></div>
+        <div class="f-body">
+          <div class="f-tags"><span class="t-cyan">自媒体</span><span class="t-purple">全自动</span><span class="t-pink">n8n</span></div>
+          <h3>日更 30 条的无人值守短视频工厂</h3>
+          <p>热点监控 → 选题评分 → 脚本生成 → 语音合成 → 自动剪辑 → 定时发布，全链路 n8n 编排，人只负责最后的合规抽检。</p>
+          <div class="f-metrics">
+            <div><b>30条/天</b><span>产出量</span></div>
+            <div><b>&lt;10分钟</b><span>人工干预</span></div>
+            <div><b>200w+</b><span>月均播放</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 数据带 ===================== -->
+<div class="databar">
+  <div class="wrap">
+    <div class="grid6">
+      <div class="db"><b>1,286</b><span>实战案例</span></div>
+      <div class="db"><b>3,500+</b><span>提示词模板</span></div>
+      <div class="db"><b>420</b><span>工作流配方</span></div>
+      <div class="db"><b>78</b><span>深度评测</span></div>
+      <div class="db"><b>360+</b><span>投稿作者</span></div>
+      <div class="db"><b>98K</b><span>实战派用户</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 学习路径 ===================== -->
+<section id="path">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="tag">LEARNING PATH</div>
+      <h2>四步成为智能体架构师</h2>
+      <p>为不同阶段的设计的成长路径，每一步都有配套案例与作业</p>
+    </div>
+    <div class="path">
+      <div class="step">
+        <div class="lv">入门</div>
+        <h3>跑通第一个智能体</h3>
+        <p>理解 LLM、提示词与工具调用基础，用模板搭建你的第一个能干活的 Agent。</p>
+      </div>
+      <div class="step">
+        <div class="lv">进阶</div>
+        <h3>掌握提示词工程</h3>
+        <p>角色设定、思维链、结构化输出、记忆管理，写出稳定可控的生产级提示词。</p>
+      </div>
+      <div class="step">
+        <div class="lv">高级</div>
+        <h3>编排工作流</h3>
+        <p>RAG 检索增强、条件分支、人工介入节点，构建可上线的企业级工作流。</p>
+      </div>
+      <div class="step">
+        <div class="lv">专家</div>
+        <h3>多智能体协作</h3>
+        <p>角色分工、任务路由、冲突仲裁，设计像真实团队一样协作的智能体集群。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 订阅 CTA ===================== -->
+<section id="rank" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta">
+      <div class="cta-in">
+        <h2>每周一份《智能体实战情报》</h2>
+        <p>最新案例拆解 · 神级提示词 · 工作流配方 · 平台动向，每周三直达你的邮箱</p>
+        <form onsubmit="return false">
+          <input type="email" placeholder="输入你的邮箱地址">
+          <button class="btn btn-primary" type="submit">免费订阅</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== Footer ===================== -->
+<footer id="about">
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <a class="logo" href="#">
+          <div class="logo-mark"><span>神</span></div>
+          <div>AgentGod <b>智神</b><small>AI AGENT KNOWLEDGE</small></div>
+        </a>
+        <p>AI智能体实战知识库。我们相信：智能体的价值不在演示里，而在真实业务的每一个环节中。</p>
+      </div>
+      <div>
+        <h4>知识库</h4>
+        <a href="#">智能体模板</a>
+        <a href="#">提示词工程</a>
+        <a href="#">工作流配方</a>
+        <a href="#">行业案例</a>
+      </div>
+      <div>
+        <h4>社区</h4>
+        <a href="#">投稿指南</a>
+        <a href="#">作者计划</a>
+        <a href="#">实战社群</a>
+        <a href="#">训练营</a>
+      </div>
+      <div>
+        <h4>关于</h4>
+        <a href="#">联系我们</a>
+        <a href="#">商务合作</a>
+        <a href="#">隐私政策</a>
+        <a href="#">服务条款</a>
+      </div>
+    </div>
+    <div class="copy">
+      © 2026 AgentGod.cn 智神 · AI智能体实战知识库 &nbsp;|&nbsp; <a href="https://agentgod.cn">agentgod.cn</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
